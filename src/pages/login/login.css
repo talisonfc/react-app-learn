@@ -1,0 +1,40 @@
+.login-header{
+    height: 30vh;
+    border-bottom: 1px dashed var(--header);
+}
+
+:root{
+    --header: red;
+    --content: white;
+}
+
+.login-avatar{
+    width: 100px;
+    height: 100px;
+    margin-left: calc(50% -  50px);
+    border-radius: 100%;
+    margin-top: -50px;
+    border: 3px solid var(--header);
+}
+
+.login-form{
+    width: 30%;
+    margin-left: 35%;
+}
+
+.login-buttons{
+    padding-top: 16px;
+}
+
+.login-content-form{
+    height: 70vh;
+    background: var(--content);
+}
+
+@media (max-width: 600px){
+    .login-form{
+        width: calc(100% - 32px);
+        margin-left: 0;
+        padding: 16px;
+    }
+}

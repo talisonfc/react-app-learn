@@ -1,41 +1,20 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { Redirect } from 'react-router-dom'
 import './dasheboard.css'
 
-import { withStyles } from '@material-ui/core/styles'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-
 import MenuIcon from '@material-ui/icons/Menu'
-import DeleteIcon from '@material-ui/icons/Delete'
 
 import Menu from '../../menu'
 import Estoque from '../../repository/estoque'
+import ListOfItens from './list-of-itens'
+import CreateItem from './create-item'
+import EditItem from './edit-item'
 
-const styles = {
-    root: {
-        flexGrow: 1
-    },
-    grow: {
-        flexGrow: 1
-    },
-    menuButton: {
-        marginLeft: -12,
-        marginRight: 20
-    }
-}
-
-
+import axios from 'axios'
 
 class Dasheboard extends React.Component {
 
@@ -44,7 +23,8 @@ class Dasheboard extends React.Component {
         this.state = {
             redirectToLogin: false,
             menu: false,
-            estoque: new Estoque()
+            view: 'list',
+            itemID: ''
         }
     }
 
@@ -66,55 +46,59 @@ class Dasheboard extends React.Component {
         })
     }
 
-    removeItem(index){
-        this.state.estoque.removeItemByIndex(index)
+    createItem() {
+        this.setState({
+            view: 'create'
+        })
+    }
+
+    editItem(id){
+        this.setState({view: 'edit', itemID: id})
+    }
+
+    onList() {
+        this.setState({
+            view: 'list'
+        })
     }
 
     render() {
-        const { classes } = this.props
-
-        const listOfItens = (
-            <List>
-                {this.state.estoque.itens.map((item, index) => (
-                    <ListItem key={index}>
-                        <ListItemText primary={item.produto.nome} />
-                        <ListItemSecondaryAction>
-                            <IconButton aria-label="Delete" onClick={()=>{this.removeItem(index)}}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </ListItemSecondaryAction>
-                    </ListItem>
-                ))}
-            </List>
-        )
-
-        const content = (
-            <div className="content">
-                {listOfItens}
-            </div>
-        )
+        let content;
+        switch(this.state.view){
+            case 'list':{
+                content = <ListOfItens onEditItem={(id)=>this.editItem(id)} />
+                break
+            }
+            case 'create':{
+                content = <CreateItem onClose={() => this.onList()} estoque={this.state.estoque}/>
+                break
+            }
+            case 'edit':{
+                content = <EditItem onClose={() => this.onList()} itemID={this.state.itemID}/>
+            }
+            
+        }
 
         return (
-            <div className={classes.root}>
+            <div className='root'>
                 <Menu open={this.state.menu} onClose={() => this.closeMenu()} />
                 <div>
                     <AppBar>
                         <Toolbar>
-                            <IconButton color='inherit' className={classes.menuButton} onClick={() => this.openMenu()}>
+                            <IconButton color='inherit' className='menuButton' onClick={() => this.openMenu()}>
                                 <MenuIcon />
                             </IconButton>
-                            <Typography variant='h6' color='inherit' className={classes.grow}>Produtos</Typography>
-                            <Button color='inherit'>Login</Button>
+                            <Typography variant='h6' color='inherit' className='grow'>Produtos</Typography>
+                            <Button color='inherit' onClick={() => this.createItem()}>Novo</Button>
                         </Toolbar>
                     </AppBar>
                 </div>
-                {content}
+                <div className="content">
+                    {content}
+                </div>
             </div>
         )
     }
 }
 
-Dasheboard.propTypes = {
-    classes: PropTypes.object.isRequired
-}
-export default withStyles(styles)(Dasheboard)
+export default Dasheboard

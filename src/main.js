@@ -8,8 +8,8 @@ class Main extends React.Component {
         return (
             <BrowserRouter>
                 <Switch>
-                    <Route exact path='/' component={Login} />
-                    <Route path='/dasheboard' component={Dasheboard} />
+                    <Route exact path='/' render={() => <Login store={this.props.store} />} />
+                    <Route path='/dasheboard' render={() => <Dasheboard store={this.props.store} />} />
                 </Switch>
             </BrowserRouter>
         )

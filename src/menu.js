@@ -28,7 +28,7 @@ class Menu extends React.Component {
             pathname: '/'
         },
         {
-            name: 'Dasheboard',
+            name: 'Produtos',
             pathname: '/dasheboard'
         }
     ]
@@ -41,21 +41,6 @@ class Menu extends React.Component {
         }
     }
 
-    onClose(page) {
-        console.log(page)
-        if (page !== undefined) {
-            this.setState({
-                close: !this.state.close,
-                page: page.name
-            })
-        }
-        else {
-            this.setState({
-                close: !this.state.close
-            })
-        }
-    }
-
     render() {
 
         const sideList = (
@@ -65,7 +50,7 @@ class Menu extends React.Component {
                         <ListItem button key={page.name}>
                             <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                             <ListItemText primary={page.name}
-                                onClick={() => this.onClose(page)} />
+                                onClick={() => this.props.onClose()} />
                         </ListItem>
                     ))}
                 </List>
@@ -74,7 +59,7 @@ class Menu extends React.Component {
 
         const menu = (
             <div>
-                <Drawer open={this.props.open ^ this.state.close ? true : false} onClose={() => this.props.onClose()}>
+                <Drawer open={this.props.open} onClose={() => this.props.onClose()}>
                     <div
                         tabIndex={0}
                         role='button'>

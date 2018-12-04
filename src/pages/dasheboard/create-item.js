@@ -14,7 +14,8 @@ class CreateItem extends React.Component {
             descricao: '',
             valor: '',
             quantidade: '',
-            minimo: ''
+            minimo: '',
+            token: this.props.store.getState().controllerUsuario.user.id
         }
     }
 
@@ -31,12 +32,12 @@ class CreateItem extends React.Component {
                 descricao: this.state.descricao,
                 valor: this.state.valor
             },
-            quantidade: this.state.quantidade,
-            minimo: this.state.minimo
+            qtn: this.state.quantidade,
+            min: this.state.minimo
         }
 
-        axios.post('http://localhost:3100/api/itemestoque', item).then(result => {
-            this.props.onClose(this)
+        axios.post(`http://localhost:3100/api/item-estoques?access_token=${this.state.token}`, item).then(result => {
+            this.props.store.dispatch({type: 'LIST_PRODUTOS'})
         }).catch(err => {
             console.error(err)
         })
@@ -52,7 +53,7 @@ class CreateItem extends React.Component {
     }
 
     exit(){
-        this.props.onClose(this)
+        this.props.store.dispatch({type: 'LIST_PRODUTOS'})
     }
 
     render() {

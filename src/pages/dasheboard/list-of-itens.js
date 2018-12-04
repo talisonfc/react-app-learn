@@ -24,12 +24,13 @@ class ListOfItens extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            itens: []
+            itens: [],
+            token: this.props.store.getState().controllerUsuario.user.id
         }
     }
 
     componentDidMount() {
-        axios.get("http://localhost:3100/api/itemestoque").then(result => {
+        axios.get(`http://localhost:3100/api/item-estoques?access_token=${this.state.token}`).then(result => {
             let temp = []
             result.data.forEach(item => {
                 temp.push(item)
@@ -39,7 +40,7 @@ class ListOfItens extends Component {
     }
 
     removeItem(i) {
-        axios.delete(`http://localhost:3100/api/itemestoque/${this.state.itens[i].id}`).then(result => {
+        axios.delete(`http://localhost:3100/api/item-estoques/${this.state.itens[i].id}?access_token=${this.state.token}`).then(result => {
             this.state.itens.splice(i, 1)
             this.setState({ estoque: this.state.estoque })
         }).catch(err => {
@@ -50,13 +51,13 @@ class ListOfItens extends Component {
     render() {
         const N = this.state.itens.length
 
-        if(N==0){
+        if (N == 0) {
             return (
                 <div style={{
                     textAlign: 'center',
                     color: '#ccc'
-                    }}>
-                    <Receipt style={{fontSize: '12em', marginTop: '150px'}}/>
+                }}>
+                    <Receipt style={{ fontSize: '12em', marginTop: '150px' }} />
                     <div>
                         <Button style={{
                             textTransform: 'inherit',
@@ -82,37 +83,37 @@ class ListOfItens extends Component {
                     ))}
                 </List> */}
                 {/* <Paper> */}
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Nome</TableCell>
-                                <TableCell>Descrição</TableCell>
-                                <TableCell>Valor</TableCell>
-                                <TableCell>Quantidade</TableCell>
-                                <TableCell>Minimo</TableCell>
-                                <TableCell></TableCell>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Nome</TableCell>
+                            <TableCell>Descrição</TableCell>
+                            <TableCell>Valor</TableCell>
+                            <TableCell>Quantidade</TableCell>
+                            <TableCell>Minimo</TableCell>
+                            <TableCell></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {this.state.itens.map((item, i) => (
+                            <TableRow key={item.id}>
+                                <TableCell>{item.produto.nome}</TableCell>
+                                <TableCell>{item.produto.descricao}</TableCell>
+                                <TableCell>{item.produto.valor}</TableCell>
+                                <TableCell>{item.qtn}</TableCell>
+                                <TableCell>{item.min}</TableCell>
+                                <TableCell style={{ textAlign: 'right' }}>
+                                    <IconButton aria-label="Delete" onClick={() => { this.props.onEditItem(item.id) }}>
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton aria-label="Delete" onClick={() => { this.removeItem(i) }}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
                             </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {this.state.itens.map((item, i) => (
-                                <TableRow key={item.id}>
-                                    <TableCell>{item.produto.nome}</TableCell>
-                                    <TableCell>{item.produto.descricao}</TableCell>
-                                    <TableCell>{item.produto.valor}</TableCell>
-                                    <TableCell>{item.quantidade}</TableCell>
-                                    <TableCell>{item.minimo}</TableCell>
-                                    <TableCell style={{textAlign: 'right'}}>
-                                        <IconButton aria-label="Delete" onClick={() => { this.props.onEditItem(item.id) }}>
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton aria-label="Delete" onClick={() => { this.removeItem(i) }}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                        ))}
+                    </TableBody>
+                </Table>
                 {/* </Paper> */}
             </div>
         )

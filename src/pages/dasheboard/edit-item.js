@@ -15,20 +15,21 @@ class EditItem extends React.Component {
             descricao: '',
             valor: '',
             quantidade: '',
-            minimo: ''
+            minimo: '',
+            token: this.props.store.getState().controllerUsuario.user.id
         }
     }
 
     componentDidMount() {
-        axios.get(`http://localhost:3100/api/itemestoque/${this.props.itemID}`).then(res => {
+        axios.get(`http://localhost:3100/api/item-estoques/${this.props.itemID}?access_token=${this.state.token}`).then(res => {
             let item = res.data
             this.setState({
                 id: this.props.itemID,
                 nome: item.produto.nome,
                 descricao: item.produto.descricao,
                 valor: item.produto.valor,
-                quantidade: item.quantidade,
-                minimo: item.minimo
+                quantidade: item.qtn,
+                minimo: item.min
             })
         }).catch(err => {
             console.error(err)
@@ -49,12 +50,12 @@ class EditItem extends React.Component {
                 descricao: this.state.descricao,
                 valor: this.state.valor
             },
-            quantidade: this.state.quantidade,
-            minimo: this.state.minimo
+            qtn: this.state.quantidade,
+            min: this.state.minimo
         }
 
-        axios.put(`http://localhost:3100/api/itemestoque`, item).then(result => {
-            this.props.onClose(this)
+        axios.put(`http://localhost:3100/api/item-estoques?access_token=${this.state.token}`, item).then(result => {
+            this.props.store.dispatch({type: 'LIST_PRODUTOS'})
         }).catch(err => {
             console.error(err)
         })
